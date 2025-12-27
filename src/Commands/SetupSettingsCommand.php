@@ -4,8 +4,8 @@ namespace FurkanMeclis\PayTRLink\Commands;
 
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Spatie\LaravelSettings\SettingsRepositories\SettingsRepository;
 
 class SetupSettingsCommand extends Command
 {
@@ -37,16 +37,30 @@ class SetupSettingsCommand extends Command
             return self::FAILURE;
         }
 
+        // Get settings repository
+        try {
+            $repository = $this->getSettingsRepository();
+        } catch (\Exception $e) {
+            $this->error('❌ Could not resolve SettingsRepository.');
+            $this->line('💡 Make sure Spatie Laravel Settings is properly configured.');
+            $this->line('Error: '.$e->getMessage());
+
+            return self::FAILURE;
+        }
+
         // Check if PayTRSettings migration already exists
         $group = PayTRSettings::group();
         $properties = ['merchant_id', 'merchant_key', 'merchant_salt', 'debug_on'];
 
-        $existingSettings = DB::table('settings')
-            ->where('group', $group)
-            ->whereIn('key', $properties)
-            ->count();
+        $allExist = true;
+        foreach ($properties as $property) {
+            if (! $repository->checkIfPropertyExists($group, $property)) {
+                $allExist = false;
+                break;
+            }
+        }
 
-        if ($existingSettings === count($properties)) {
+        if ($allExist) {
             $this->info('✅ PayTR Settings are already set up in the database.');
             $this->newLine();
 
@@ -66,8 +80,8 @@ class SetupSettingsCommand extends Command
         $this->line('📋 Creating PayTR Settings migration...');
 
         try {
-            // Create settings manually in the database
-            $this->createSettingsManually($group, $properties);
+            // Create settings using repository
+            $this->createSettingsUsingRepository($repository, $group, $properties);
 
             $this->newLine();
             $this->info('✅ Settings migration completed!');
@@ -93,26 +107,44 @@ class SetupSettingsCommand extends Command
     }
 
     /**
-     * Create settings manually in the database
+     * Get SettingsRepository instance
      */
-    protected function createSettingsManually(string $group, array $properties): void
+    protected function getSettingsRepository(): SettingsRepository
+    {
+        // Get repository name from PayTRSettings if specified
+        $repositoryName = PayTRSettings::repository();
+
+        // If no specific repository, use default
+        if ($repositoryName === null) {
+            $repositoryName = config('settings.default_repository', 'database');
+        }
+
+        // Get repository configuration
+        $repositories = config('settings.repositories', []);
+        if (! isset($repositories[$repositoryName])) {
+            throw new \RuntimeException("Settings repository '{$repositoryName}' not found in config.");
+        }
+
+        $repositoryConfig = $repositories[$repositoryName];
+        $repositoryClass = $repositoryConfig['type'] ?? \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class;
+
+        // Resolve repository from container or create new instance
+        if (app()->bound($repositoryClass)) {
+            return app($repositoryClass);
+        }
+
+        // Create repository instance with config
+        return new $repositoryClass($repositoryConfig);
+    }
+
+    /**
+     * Create settings using SettingsRepository
+     */
+    protected function createSettingsUsingRepository(SettingsRepository $repository, string $group, array $properties): void
     {
         foreach ($properties as $property) {
-            $exists = DB::table('settings')
-                ->where('group', $group)
-                ->where('key', $property)
-                ->exists();
-
-            if (! $exists) {
-                DB::table('settings')->insert([
-                    'group' => $group,
-                    'key' => $property,
-                    'payload' => json_encode(null),
-                    'locked' => false,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-
+            if (! $repository->checkIfPropertyExists($group, $property)) {
+                $repository->createProperty($group, $property, null);
                 $this->line("  ✓ Created setting: {$group}.{$property}");
             }
         }
