@@ -160,7 +160,7 @@ class PayTRLinkService
 
         $postData = [
             'merchant_id' => $merchantId,
-            'id' => $data->link_id,
+            'id' => (int) $data->link_id, // Dokümantasyona göre integer olmalı
             'cell_phone' => $data->phone,
             'paytr_token' => $paytrToken,
             'debug_on' => $debugOn,
@@ -192,7 +192,7 @@ class PayTRLinkService
 
         $postData = [
             'merchant_id' => $merchantId,
-            'id' => $data->link_id,
+            'id' => (int) $data->link_id, // Dokümantasyona göre integer olmalı
             'email' => $data->email,
             'paytr_token' => $paytrToken,
             'debug_on' => $debugOn,

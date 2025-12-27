@@ -54,10 +54,17 @@ class TestSendLinkCommand extends Command
                 return self::FAILURE;
             }
         } else {
-            $phone = $this->ask('Telefon numarasını girin (örn: 5551234567)');
+            $phone = $this->ask('Telefon numarasını girin (örn: 05000000000)');
 
             if (empty($phone)) {
                 $this->error('❌ Telefon numarası boş olamaz!');
+
+                return self::FAILURE;
+            }
+
+            // Telefon numarası validasyonu: 05 ile başlamalı ve 11 hane olmalı
+            if (! preg_match('/^05\d{9}$/', $phone)) {
+                $this->error('❌ Geçersiz telefon numarası! 05 ile başlamalı ve 11 hane olmalıdır (örn: 05000000000)');
 
                 return self::FAILURE;
             }
