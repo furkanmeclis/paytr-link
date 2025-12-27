@@ -182,7 +182,7 @@ class TestSendLinkCommand extends Command
                     $this->newLine();
                     $this->line('Durum: '.$sendResponse->status);
                     $this->newLine();
-                    
+
                     // Tam response'u göster
                     $this->line('📋 Tam Response:');
                     $this->line(json_encode($sendResponse->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
