@@ -46,7 +46,7 @@ class TokenGenerator
     {
         // Tüm değerleri string'e çevir (dokümantasyona göre)
         $data = (string) $linkId.(string) $merchantId.$phone.$salt;
-        
+
         return base64_encode(hash_hmac('sha256', $data, $key, true));
     }
 
@@ -59,7 +59,7 @@ class TokenGenerator
     {
         // Tüm değerleri string'e çevir (dokümantasyona göre)
         $data = (string) $linkId.(string) $merchantId.$email.$salt;
-        
+
         return base64_encode(hash_hmac('sha256', $data, $key, true));
     }
 
