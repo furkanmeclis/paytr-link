@@ -2,6 +2,10 @@
 
 All notable changes to `furkanmeclis/paytr-link` will be documented in this file.
 
+## V0.10 - 2025-12-27
+
+**Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0.9...v0.10
+
 ## V0.9 - 2025-12-27
 
 **Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0.8...v0.9
@@ -63,11 +67,13 @@ composer require furkanmeclis/paytr-link
 
 
 
+
 ```
 Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="paytr-link-config"
+
 
 
 
@@ -92,6 +98,7 @@ php artisan migrate
 
 
 
+
 ```
 #### Configuration
 
@@ -102,6 +109,7 @@ PAYTR_MERCHANT_ID=your_merchant_id
 PAYTR_MERCHANT_KEY=your_merchant_key
 PAYTR_MERCHANT_SALT=your_merchant_salt
 PAYTR_DEBUG_ON=1
+
 
 
 
@@ -147,6 +155,7 @@ if ($response->isSuccess()) {
 
 
 
+
 ```
 ##### Creating a Collection Link
 
@@ -161,6 +170,7 @@ $data = CreateLinkData::from([
 ]);
 
 $response = PayTRLink::create($data);
+
 
 
 
@@ -189,6 +199,7 @@ $response = PayTRLink::delete('link_id_here');
 
 
 
+
 ```
 ##### Sending SMS
 
@@ -207,6 +218,7 @@ $response = PayTRLink::sendSms(SendSmsData::from([
 
 
 
+
 ```
 ##### Sending Email
 
@@ -217,6 +229,7 @@ $response = PayTRLink::sendEmail(SendEmailData::from([
     'link_id' => 'link_id_here',
     'email' => 'customer@example.com',
 ]));
+
 
 
 
@@ -256,6 +269,7 @@ public function handleCallback(Request $request)
 
 
 
+
 ```
 ##### Service Injection
 
@@ -277,6 +291,7 @@ class PaymentController
         return response()->json($response);
     }
 }
+
 
 
 
@@ -307,6 +322,7 @@ $settings->save();
 
 
 
+
 ```
 When Settings is used, settings values are used instead of config values.
 
@@ -321,6 +337,7 @@ $data = CreateLinkData::from([
     'price' => 1500.00, // TL
     // ...
 ]);
+
 
 
 
@@ -358,6 +375,7 @@ try {
 
 
 
+
 ```
 #### Test
 
@@ -371,11 +389,13 @@ composer test
 
 
 
+
 ```
 Test with coverage:
 
 ```bash
 composer test-coverage
+
 
 
 
