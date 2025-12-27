@@ -31,7 +31,7 @@ class TestConfigCommand extends Command
                 $settingsMerchantId = $settings->getMerchantId();
                 $settingsMerchantKey = $settings->getMerchantKey();
                 $settingsMerchantSalt = $settings->getMerchantSalt();
-                
+
                 // Eğer Settings'de değer varsa kullan
                 if (! empty($settingsMerchantId) || ! empty($settingsMerchantKey) || ! empty($settingsMerchantSalt)) {
                     $usingSettings = true;
