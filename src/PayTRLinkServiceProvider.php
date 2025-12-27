@@ -2,7 +2,10 @@
 
 namespace FurkanMeclis\PayTRLink;
 
+use FurkanMeclis\PayTRLink\Commands\DemoLinkCommand;
+use FurkanMeclis\PayTRLink\Commands\InstallCommand;
 use FurkanMeclis\PayTRLink\Commands\PayTRLinkCommand;
+use FurkanMeclis\PayTRLink\Commands\TestConfigCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -19,7 +22,12 @@ class PayTRLinkServiceProvider extends PackageServiceProvider
             ->name('paytr-link')
             ->hasConfigFile()
             ->hasViews()
-            ->hasCommand(PayTRLinkCommand::class);
+            ->hasCommands([
+                PayTRLinkCommand::class,
+                TestConfigCommand::class,
+                DemoLinkCommand::class,
+                InstallCommand::class,
+            ]);
     }
 
     public function registeringPackage(): void
@@ -57,7 +65,7 @@ class PayTRLinkServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        // Settings migrations are handled by laravel-settings package itself
-        // Users should publish laravel-settings migrations separately
+        // Settings migrations and config are published via InstallCommand
+        // Users can use: php artisan paytr-link:install --settings
     }
 }

@@ -29,8 +29,6 @@ Config dosyasını yayınlayın:
 php artisan vendor:publish --tag="paytr-link-config"
 ```
 
-**Not**: Paket çalışması için migration gerekli değildir. Eğer link'leri veritabanında saklamak isterseniz, migration stub dosyasını kullanabilirsiniz.
-
 Eğer Spatie Laravel Settings kullanacaksanız:
 
 ```bash
@@ -182,15 +180,23 @@ Paket, Spatie Laravel Settings ile entegre çalışır. Settings kullanarak ayar
 ```php
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 
+// Settings'e değer atama
 $settings = app(PayTRSettings::class);
 $settings->merchant_id = 'your_merchant_id';
 $settings->merchant_key = 'your_merchant_key';
 $settings->merchant_salt = 'your_merchant_salt';
 $settings->debug_on = true;
 $settings->save();
+
+// Settings'den değer okuma (fallback ile config'den de okur)
+$settings = app(PayTRSettings::class);
+$merchantId = $settings->getMerchantId();
+$merchantKey = $settings->getMerchantKey();
+$merchantSalt = $settings->getMerchantSalt();
+$debugMode = $settings->getDebugOn();
 ```
 
-Settings kullanıldığında, config değerleri yerine settings değerleri kullanılır.
+Settings kullanıldığında, config değerleri yerine settings değerleri kullanılır. `getMerchantId()`, `getMerchantKey()`, `getMerchantSalt()` ve `getDebugOn()` metodları, settings'de değer yoksa otomatik olarak config'den değer alır.
 
 ## Fiyat Dönüşümü
 
