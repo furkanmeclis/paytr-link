@@ -6,6 +6,7 @@ use FurkanMeclis\PayTRLink\Commands\DemoLinkCommand;
 use FurkanMeclis\PayTRLink\Commands\InstallCommand;
 use FurkanMeclis\PayTRLink\Commands\PayTRLinkCommand;
 use FurkanMeclis\PayTRLink\Commands\TestConfigCommand;
+use FurkanMeclis\PayTRLink\Commands\TestSendLinkCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -27,6 +28,7 @@ class PayTRLinkServiceProvider extends PackageServiceProvider
                 TestConfigCommand::class,
                 DemoLinkCommand::class,
                 InstallCommand::class,
+                TestSendLinkCommand::class,
             ]);
     }
 
