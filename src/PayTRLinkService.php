@@ -21,11 +21,15 @@ class PayTRLinkService
     ) {
         // Load settings if available, otherwise use config
         if (! $this->settings) {
-            try {
-                $this->settings = app(PayTRSettings::class);
-            } catch (\Exception $e) {
-                // Settings not configured, will use config() directly
-                $this->settings = null;
+            // Only try to load settings if laravel-settings is properly configured
+            if (class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class) 
+                && config('settings.default_repository') !== null) {
+                try {
+                    $this->settings = app(PayTRSettings::class);
+                } catch (\Exception $e) {
+                    // Settings not configured, will use config() directly
+                    $this->settings = null;
+                }
             }
         }
     }
@@ -235,7 +239,15 @@ class PayTRLinkService
      */
     protected function getMerchantId(): string
     {
-        return $this->settings?->getMerchantId() ?? config('paytr-link.merchant_id', '');
+        if ($this->settings) {
+            try {
+                return $this->settings->getMerchantId() ?: config('paytr-link.merchant_id', '');
+            } catch (\Exception $e) {
+                // Settings error, fallback to config
+            }
+        }
+
+        return config('paytr-link.merchant_id', '');
     }
 
     /**
@@ -243,7 +255,15 @@ class PayTRLinkService
      */
     protected function getMerchantKey(): string
     {
-        return $this->settings?->getMerchantKey() ?? config('paytr-link.merchant_key', '');
+        if ($this->settings) {
+            try {
+                return $this->settings->getMerchantKey() ?: config('paytr-link.merchant_key', '');
+            } catch (\Exception $e) {
+                // Settings error, fallback to config
+            }
+        }
+
+        return config('paytr-link.merchant_key', '');
     }
 
     /**
@@ -251,7 +271,15 @@ class PayTRLinkService
      */
     protected function getMerchantSalt(): string
     {
-        return $this->settings?->getMerchantSalt() ?? config('paytr-link.merchant_salt', '');
+        if ($this->settings) {
+            try {
+                return $this->settings->getMerchantSalt() ?: config('paytr-link.merchant_salt', '');
+            } catch (\Exception $e) {
+                // Settings error, fallback to config
+            }
+        }
+
+        return config('paytr-link.merchant_salt', '');
     }
 
     /**
@@ -259,6 +287,14 @@ class PayTRLinkService
      */
     protected function getDebugOn(): int
     {
-        return $this->settings?->getDebugOn() ?? (config('paytr-link.debug_on', 1) ? 1 : 0);
+        if ($this->settings) {
+            try {
+                return $this->settings->getDebugOn();
+            } catch (\Exception $e) {
+                // Settings error, fallback to config
+            }
+        }
+
+        return config('paytr-link.debug_on', 1) ? 1 : 0;
     }
 }

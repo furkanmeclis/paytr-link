@@ -13,7 +13,7 @@ PayTR Link API entegrasyonu için Laravel paketi. Bu paket, PayTR Link API ile k
 - ✅ Settings yönetimi (Spatie Laravel Settings)
 - ✅ Kolay kullanım için Facade desteği
 - ✅ Kapsamlı test coverage
-- ✅ Modern PHP 8.4 özellikleri
+- ✅ PHP 8.1+ desteği
 
 ## Kurulum
 
