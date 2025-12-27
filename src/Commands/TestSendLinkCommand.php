@@ -241,7 +241,7 @@ class TestSendLinkCommand extends Command
         ];
 
         $linkTypes = [LinkTypeEnum::Product, LinkTypeEnum::Collection];
-        $currencies = [CurrencyEnum::TL, CurrencyEnum::USD, CurrencyEnum::EUR];
+        $currencies = [CurrencyEnum::TL];
 
         $selectedType = $linkTypes[array_rand($linkTypes)];
         $selectedCurrency = $currencies[array_rand($currencies)];
