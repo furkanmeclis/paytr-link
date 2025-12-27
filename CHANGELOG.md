@@ -2,6 +2,10 @@
 
 All notable changes to `furkanmeclis/paytr-link` will be documented in this file.
 
+## V0.3 - 2025-12-27
+
+**Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0.2...v0.3
+
 ## V0.2 - 2025-12-27
 
 ### PayTR Link API Laravel Package
@@ -28,11 +32,13 @@ Paketi Composer ile yükleyin:
 ```bash
 composer require furkanmeclis/paytr-link
 
+
 ```
 Config dosyasını yayınlayın:
 
 ```bash
 php artisan vendor:publish --tag="paytr-link-config"
+
 
 ```
 **Not**: Paket çalışması için migration gerekli değildir. Eğer link'leri veritabanında saklamak isterseniz, migration stub dosyasını kullanabilirsiniz.
@@ -42,6 +48,7 @@ Eğer Spatie Laravel Settings kullanacaksanız:
 ```bash
 php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
 php artisan migrate
+
 
 ```
 #### Yapılandırma
@@ -53,6 +60,7 @@ PAYTR_MERCHANT_ID=your_merchant_id
 PAYTR_MERCHANT_KEY=your_merchant_key
 PAYTR_MERCHANT_SALT=your_merchant_salt
 PAYTR_DEBUG_ON=1
+
 
 ```
 Config dosyası (`config/paytr-link.php`) ile de yapılandırabilirsiniz.
@@ -84,6 +92,7 @@ if ($response->isSuccess()) {
     $linkId = $response->id;
 }
 
+
 ```
 ##### Collection Link Oluşturma
 
@@ -99,6 +108,7 @@ $data = CreateLinkData::from([
 
 $response = PayTRLink::create($data);
 
+
 ```
 ##### Link Silme
 
@@ -112,6 +122,7 @@ $response = PayTRLink::delete(DeleteLinkData::from([
 // Veya direkt string ile
 $response = PayTRLink::delete('link_id_here');
 
+
 ```
 ##### SMS Gönderme
 
@@ -123,6 +134,7 @@ $response = PayTRLink::sendSms(SendSmsData::from([
     'phone' => '5551234567',
 ]));
 
+
 ```
 ##### Email Gönderme
 
@@ -133,6 +145,7 @@ $response = PayTRLink::sendEmail(SendEmailData::from([
     'link_id' => 'link_id_here',
     'email' => 'customer@example.com',
 ]));
+
 
 ```
 ##### Callback Doğrulama
@@ -158,6 +171,7 @@ public function handleCallback(Request $request)
     }
 }
 
+
 ```
 ##### Service Injection
 
@@ -180,6 +194,7 @@ class PaymentController
     }
 }
 
+
 ```
 #### Spatie Laravel Settings Entegrasyonu
 
@@ -195,6 +210,7 @@ $settings->merchant_salt = 'your_merchant_salt';
 $settings->debug_on = true;
 $settings->save();
 
+
 ```
 Settings kullanıldığında, config değerleri yerine settings değerleri kullanılır.
 
@@ -209,6 +225,7 @@ $data = CreateLinkData::from([
     'price' => 1500.00, // TL
     // ...
 ]);
+
 
 ```
 #### Exception Handling
@@ -232,17 +249,20 @@ try {
     ]);
 }
 
+
 ```
 #### Test
 
 ```bash
 composer test
 
+
 ```
 Coverage ile test:
 
 ```bash
 composer test-coverage
+
 
 ```
 #### Changelog
