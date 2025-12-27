@@ -40,16 +40,22 @@ class SetupSettingsCommand extends Command
         // Get settings repository
         try {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             $repository = $this->getSettingsRepository();
         } catch (\Exception $e) {
             $this->error('❌ Could not resolve SettingsRepository.');
             $this->line('💡 Make sure Spatie Laravel Settings is properly configured.');
             $this->line('Error: '.$e->getMessage());
 =======
+=======
+>>>>>>> Stashed changes
             $repository = app(SettingsRepository::class);
         } catch (\Exception $e) {
             $this->error('❌ Could not resolve SettingsRepository.');
             $this->line('💡 Make sure Spatie Laravel Settings is properly configured.');
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
             return self::FAILURE;
@@ -115,6 +121,7 @@ class SetupSettingsCommand extends Command
 
     /**
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
      * Get SettingsRepository instance
      */
     protected function getSettingsRepository(): SettingsRepository
@@ -148,6 +155,10 @@ class SetupSettingsCommand extends Command
     /**
      * Create settings using SettingsRepository
      */
+=======
+     * Create settings using SettingsRepository
+     */
+>>>>>>> Stashed changes
 =======
      * Create settings using SettingsRepository
      */
