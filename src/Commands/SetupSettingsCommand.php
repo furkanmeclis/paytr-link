@@ -39,24 +39,11 @@ class SetupSettingsCommand extends Command
 
         // Get settings repository
         try {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            $repository = $this->getSettingsRepository();
-        } catch (\Exception $e) {
-            $this->error('❌ Could not resolve SettingsRepository.');
-            $this->line('💡 Make sure Spatie Laravel Settings is properly configured.');
-            $this->line('Error: '.$e->getMessage());
-=======
-=======
->>>>>>> Stashed changes
             $repository = app(SettingsRepository::class);
         } catch (\Exception $e) {
             $this->error('❌ Could not resolve SettingsRepository.');
             $this->line('💡 Make sure Spatie Laravel Settings is properly configured.');
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+            $this->line('Error: '.$e->getMessage());
 
             return self::FAILURE;
         }
@@ -120,49 +107,8 @@ class SetupSettingsCommand extends Command
     }
 
     /**
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-     * Get SettingsRepository instance
-     */
-    protected function getSettingsRepository(): SettingsRepository
-    {
-        // Get repository name from PayTRSettings if specified
-        $repositoryName = PayTRSettings::repository();
-
-        // If no specific repository, use default
-        if ($repositoryName === null) {
-            $repositoryName = config('settings.default_repository', 'database');
-        }
-
-        // Get repository configuration
-        $repositories = config('settings.repositories', []);
-        if (! isset($repositories[$repositoryName])) {
-            throw new \RuntimeException("Settings repository '{$repositoryName}' not found in config.");
-        }
-
-        $repositoryConfig = $repositories[$repositoryName];
-        $repositoryClass = $repositoryConfig['type'] ?? \Spatie\LaravelSettings\SettingsRepositories\DatabaseSettingsRepository::class;
-
-        // Resolve repository from container or create new instance
-        if (app()->bound($repositoryClass)) {
-            return app($repositoryClass);
-        }
-
-        // Create repository instance with config
-        return new $repositoryClass($repositoryConfig);
-    }
-
-    /**
      * Create settings using SettingsRepository
      */
-=======
-     * Create settings using SettingsRepository
-     */
->>>>>>> Stashed changes
-=======
-     * Create settings using SettingsRepository
-     */
->>>>>>> Stashed changes
     protected function createSettingsUsingRepository(SettingsRepository $repository, string $group, array $properties): void
     {
         foreach ($properties as $property) {
