@@ -47,7 +47,7 @@ class TestSendLinkCommand extends Command
         // Email veya SMS için gerekli bilgileri al
         if ($sendType === 'email') {
             $email = $this->ask('Email adresini girin');
-            
+
             if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->error('❌ Geçersiz email adresi!');
 
@@ -55,7 +55,7 @@ class TestSendLinkCommand extends Command
             }
         } else {
             $phone = $this->ask('Telefon numarasını girin (örn: 5551234567)');
-            
+
             if (empty($phone)) {
                 $this->error('❌ Telefon numarası boş olamaz!');
 
@@ -113,7 +113,7 @@ class TestSendLinkCommand extends Command
             // Email veya SMS gönder
             if ($sendType === 'email') {
                 $this->line('📧 Email gönderiliyor...');
-                
+
                 $sendEmailData = SendEmailData::from([
                     'link_id' => $linkId,
                     'email' => $email,
@@ -144,7 +144,7 @@ class TestSendLinkCommand extends Command
                 }
             } else {
                 $this->line('📱 SMS gönderiliyor...');
-                
+
                 $sendSmsData = SendSmsData::from([
                     'link_id' => $linkId,
                     'phone' => $phone,
@@ -245,10 +245,10 @@ class TestSendLinkCommand extends Command
 
         $selectedType = $linkTypes[array_rand($linkTypes)];
         $selectedCurrency = $currencies[array_rand($currencies)];
-        
+
         // Rastgele fiyat (10-1000 arası)
         $price = rand(10, 1000) + (rand(0, 99) / 100);
-        
+
         // Rastgele max taksit (1-12 arası)
         $maxInstallment = rand(1, 12);
 
@@ -270,4 +270,3 @@ class TestSendLinkCommand extends Command
         return $data;
     }
 }
-
