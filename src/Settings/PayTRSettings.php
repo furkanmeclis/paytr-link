@@ -6,13 +6,13 @@ use Spatie\LaravelSettings\Settings;
 
 class PayTRSettings extends Settings
 {
-    public ?string $merchant_id = null;
+    public string $merchant_id = '';
 
-    public ?string $merchant_key = null;
+    public string $merchant_key = '';
 
-    public ?string $merchant_salt = null;
+    public string $merchant_salt = '';
 
-    public ?bool $debug_on = null;
+    public bool $debug_on = false;
 
     public static function group(): string
     {
@@ -24,7 +24,11 @@ class PayTRSettings extends Settings
      */
     public function getMerchantId(): string
     {
-        return $this->merchant_id ?? config('paytr-link.merchant_id', '');
+        if (empty($this->merchant_id)) {
+            return config('paytr-link.merchant_id', '');
+        }
+
+        return $this->merchant_id;
     }
 
     /**
@@ -32,7 +36,11 @@ class PayTRSettings extends Settings
      */
     public function getMerchantKey(): string
     {
-        return $this->merchant_key ?? config('paytr-link.merchant_key', '');
+        if (empty($this->merchant_key)) {
+            return config('paytr-link.merchant_key', '');
+        }
+
+        return $this->merchant_key;
     }
 
     /**
@@ -40,7 +48,11 @@ class PayTRSettings extends Settings
      */
     public function getMerchantSalt(): string
     {
-        return $this->merchant_salt ?? config('paytr-link.merchant_salt', '');
+        if (empty($this->merchant_salt)) {
+            return config('paytr-link.merchant_salt', '');
+        }
+
+        return $this->merchant_salt;
     }
 
     /**
@@ -48,8 +60,14 @@ class PayTRSettings extends Settings
      */
     public function getDebugOn(): int
     {
-        $debug = $this->debug_on ?? config('paytr-link.debug_on', 1);
+        // If debug_on is false and merchant_id is empty, it means settings haven't been initialized
+        // In this case, use config fallback
+        if ($this->debug_on === false && empty($this->merchant_id)) {
+            $debug = config('paytr-link.debug_on', 1);
 
-        return $debug ? 1 : 0;
+            return $debug ? 1 : 0;
+        }
+
+        return $this->debug_on ? 1 : 0;
     }
 }

@@ -186,7 +186,7 @@ $settings = app(PayTRSettings::class);
 $settings->merchant_id = 'your_merchant_id';
 $settings->merchant_key = 'your_merchant_key';
 $settings->merchant_salt = 'your_merchant_salt';
-$settings->debug_on = true;
+$settings->debug_on = true; // or false
 $settings->save();
 
 // Reading values from Settings (also reads from config with fallback)
