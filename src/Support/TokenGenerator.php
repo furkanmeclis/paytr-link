@@ -40,11 +40,11 @@ class TokenGenerator
     /**
      * Generate token for SMS sending
      * Token format: id + merchant_id + cell_phone + merchant_salt
-     * Dokümantasyon: https://www.paytr.com/odeme/api/link/send-sms
+     * Documentation: https://www.paytr.com/odeme/api/link/send-sms
      */
     public static function forSendSms(string|int $linkId, string|int $merchantId, string $phone, string $key, string $salt): string
     {
-        // Tüm değerleri string'e çevir (dokümantasyona göre)
+        // Convert all values to string (according to documentation)
         $data = (string) $linkId.(string) $merchantId.$phone.$salt;
 
         return base64_encode(hash_hmac('sha256', $data, $key, true));
@@ -53,11 +53,11 @@ class TokenGenerator
     /**
      * Generate token for email sending
      * Token format: id + merchant_id + email + merchant_salt
-     * Dokümantasyon: https://www.paytr.com/odeme/api/link/send-email
+     * Documentation: https://www.paytr.com/odeme/api/link/send-email
      */
     public static function forSendEmail(string|int $linkId, string|int $merchantId, string $email, string $key, string $salt): string
     {
-        // Tüm değerleri string'e çevir (dokümantasyona göre)
+        // Convert all values to string (according to documentation)
         $data = (string) $linkId.(string) $merchantId.$email.$salt;
 
         return base64_encode(hash_hmac('sha256', $data, $key, true));

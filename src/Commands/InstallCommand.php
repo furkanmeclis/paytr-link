@@ -7,17 +7,17 @@ use Illuminate\Console\Command;
 class InstallCommand extends Command
 {
     public $signature = 'paytr-link:install 
-                        {--settings : Spatie Laravel Settings migration\'larını publish et}';
+                        {--settings : Publish Spatie Laravel Settings migrations}';
 
-    public $description = 'PayTR Link paketini kurar ve gerekli dosyaları publish eder';
+    public $description = 'Installs PayTR Link package and publishes required files';
 
     public function handle(): int
     {
-        $this->info('📦 PayTR Link Paketi Kurulumu');
+        $this->info('📦 PayTR Link Package Installation');
         $this->newLine();
 
         // Config publish
-        $this->line('📋 Config dosyası publish ediliyor...');
+        $this->line('📋 Publishing config file...');
         $this->call('vendor:publish', [
             '--tag' => 'paytr-link-config',
             '--force' => false,
@@ -25,11 +25,11 @@ class InstallCommand extends Command
 
         $this->newLine();
 
-        // Settings migration ve config publish (opsiyonel)
+        // Settings migration and config publish (optional)
         if ($this->option('settings') || class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class)) {
             if (class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class)) {
                 // Settings config publish
-                $this->line('⚙️  Spatie Laravel Settings config dosyası publish ediliyor...');
+                $this->line('⚙️  Publishing Spatie Laravel Settings config file...');
                 try {
                     $this->call('vendor:publish', [
                         '--provider' => 'Spatie\LaravelSettings\LaravelSettingsServiceProvider',
@@ -37,11 +37,11 @@ class InstallCommand extends Command
                         '--force' => false,
                     ]);
                 } catch (\Exception $e) {
-                    // Config zaten publish edilmiş olabilir, devam et
+                    // Config may already be published, continue
                 }
 
                 // Settings migration publish
-                $this->line('⚙️  Spatie Laravel Settings migration\'ları publish ediliyor...');
+                $this->line('⚙️  Publishing Spatie Laravel Settings migrations...');
                 try {
                     $this->call('vendor:publish', [
                         '--provider' => 'Spatie\LaravelSettings\LaravelSettingsServiceProvider',
@@ -49,37 +49,37 @@ class InstallCommand extends Command
                         '--force' => false,
                     ]);
                     $this->newLine();
-                    $this->info('✅ Settings migration\'ları publish edildi!');
-                    $this->line('💡 Migration\'ları çalıştırmak için: php artisan migrate');
+                    $this->info('✅ Settings migrations published!');
+                    $this->line('💡 To run migrations: php artisan migrate');
                 } catch (\Exception $e) {
-                    $this->warn('⚠️  Settings migration publish edilemedi: '.$e->getMessage());
+                    $this->warn('⚠️  Settings migrations could not be published: '.$e->getMessage());
                 }
             } else {
-                $this->warn('⚠️  Spatie Laravel Settings paketi yüklü değil.');
-                $this->line('💡 Settings kullanmak için: composer require spatie/laravel-settings');
+                $this->warn('⚠️  Spatie Laravel Settings package is not installed.');
+                $this->line('💡 To use Settings: composer require spatie/laravel-settings');
             }
         }
 
         $this->newLine();
-        $this->info('✅ Kurulum tamamlandı!');
+        $this->info('✅ Installation completed!');
         $this->newLine();
 
-        $this->line('📝 Sonraki Adımlar:');
-        $this->line('1. .env dosyanıza PayTR bilgilerinizi ekleyin:');
+        $this->line('📝 Next Steps:');
+        $this->line('1. Add your PayTR credentials to your .env file:');
         $this->line('   PAYTR_MERCHANT_ID=your_merchant_id');
         $this->line('   PAYTR_MERCHANT_KEY=your_merchant_key');
         $this->line('   PAYTR_MERCHANT_SALT=your_merchant_salt');
         $this->line('   PAYTR_DEBUG_ON=1');
         $this->newLine();
-        $this->line('2. Konfigürasyonu test edin:');
+        $this->line('2. Test the configuration:');
         $this->line('   php artisan paytr-link:test');
         $this->newLine();
-        $this->line('3. Demo link oluşturun:');
+        $this->line('3. Create a demo link:');
         $this->line('   php artisan paytr-link:demo');
 
         if ($this->option('settings') || class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class)) {
             $this->newLine();
-            $this->line('4. Migration\'ları çalıştırın (eğer Settings kullanacaksanız):');
+            $this->line('4. Run migrations (if you will use Settings):');
             $this->line('   php artisan migrate');
         }
 

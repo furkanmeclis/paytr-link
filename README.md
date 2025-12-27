@@ -4,42 +4,42 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/furkanmeclis/paytr-link/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/furkanmeclis/paytr-link/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/furkanmeclis/paytr-link.svg?style=flat-square)](https://packagist.org/packages/furkanmeclis/paytr-link)
 
-PayTR Link API entegrasyonu için Laravel paketi. Bu paket, PayTR Link API ile kolayca entegre olmanızı sağlar.
+Laravel package for PayTR Link API integration. This package allows you to easily integrate with PayTR Link API.
 
-## Özellikler
+## Features
 
-- ✅ PayTR Link API tüm endpoint'leri
+- ✅ All PayTR Link API endpoints
 - ✅ Type-safe Data Transfer Objects (Spatie Laravel Data)
-- ✅ Settings yönetimi (Spatie Laravel Settings)
-- ✅ Event sistemi (Link oluşturma, silme, SMS/Email gönderme, Callback)
-- ✅ Kolay kullanım için Facade desteği
-- ✅ Kapsamlı test coverage
-- ✅ PHP 8.1+ desteği
+- ✅ Settings management (Spatie Laravel Settings)
+- ✅ Event system (Link creation, deletion, SMS/Email sending, Callback)
+- ✅ Facade support for easy usage
+- ✅ Comprehensive test coverage
+- ✅ PHP 8.1+ support
 
-## Kurulum
+## Installation
 
-Paketi Composer ile yükleyin:
+Install the package via Composer:
 
 ```bash
 composer require furkanmeclis/paytr-link
 ```
 
-Config dosyasını yayınlayın:
+Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="paytr-link-config"
 ```
 
-Eğer Spatie Laravel Settings kullanacaksanız:
+If you're going to use Spatie Laravel Settings:
 
 ```bash
 php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
 php artisan migrate
 ```
 
-## Yapılandırma
+## Configuration
 
-`.env` dosyanıza PayTR bilgilerinizi ekleyin:
+Add your PayTR credentials to your `.env` file:
 
 ```env
 PAYTR_MERCHANT_ID=your_merchant_id
@@ -48,11 +48,11 @@ PAYTR_MERCHANT_SALT=your_merchant_salt
 PAYTR_DEBUG_ON=1
 ```
 
-Config dosyası (`config/paytr-link.php`) ile de yapılandırabilirsiniz.
+You can also configure via the config file (`config/paytr-link.php`).
 
-## Kullanım
+## Usage
 
-### Link Oluşturma
+### Creating a Link
 
 ```php
 use FurkanMeclis\PayTRLink\Facades\PayTRLink;
@@ -61,8 +61,8 @@ use FurkanMeclis\PayTRLink\Enums\CurrencyEnum;
 use FurkanMeclis\PayTRLink\Enums\LinkTypeEnum;
 
 $data = CreateLinkData::from([
-    'name' => 'Web Tasarım Hizmeti',
-    'price' => 1500.00, // TL cinsinden
+    'name' => 'Web Design Service',
+    'price' => 1500.00, // in TL
     'currency' => CurrencyEnum::TL,
     'link_type' => LinkTypeEnum::Product,
     'max_installment' => 12,
@@ -78,22 +78,22 @@ if ($response->isSuccess()) {
 }
 ```
 
-### Collection Link Oluşturma
+### Creating a Collection Link
 
 ```php
 $data = CreateLinkData::from([
-    'name' => 'Toplu Ödeme',
+    'name' => 'Bulk Payment',
     'price' => 5000.00,
     'currency' => CurrencyEnum::TL,
     'link_type' => LinkTypeEnum::Collection,
-    'email' => 'customer@example.com', // Collection için zorunlu
+    'email' => 'customer@example.com', // Required for Collection
     'max_installment' => 12,
 ]);
 
 $response = PayTRLink::create($data);
 ```
 
-### Link Silme
+### Deleting a Link
 
 ```php
 use FurkanMeclis\PayTRLink\Data\DeleteLinkData;
@@ -102,11 +102,11 @@ $response = PayTRLink::delete(DeleteLinkData::from([
     'link_id' => 'link_id_here',
 ]));
 
-// Veya direkt string ile
+// Or directly with a string
 $response = PayTRLink::delete('link_id_here');
 ```
 
-### SMS Gönderme
+### Sending SMS
 
 ```php
 use FurkanMeclis\PayTRLink\Data\SendSmsData;
@@ -117,7 +117,7 @@ $response = PayTRLink::sendSms(SendSmsData::from([
 ]));
 ```
 
-### Email Gönderme
+### Sending Email
 
 ```php
 use FurkanMeclis\PayTRLink\Data\SendEmailData;
@@ -128,7 +128,7 @@ $response = PayTRLink::sendEmail(SendEmailData::from([
 ]));
 ```
 
-### Callback Doğrulama
+### Callback Validation
 
 ```php
 use Illuminate\Http\Request;
@@ -136,14 +136,14 @@ use Illuminate\Http\Request;
 public function handleCallback(Request $request)
 {
     if (PayTRLink::validateCallback($request->all())) {
-        // İşlem başarılı
+        // Transaction successful
         $callbackData = \FurkanMeclis\PayTRLink\Data\CallbackData::from($request->all());
         
         if ($callbackData->status === 'success') {
-            // Ödeme başarılı, işlemi güncelle
+            // Payment successful, update the transaction
             echo "OK";
         } else {
-            // Ödeme başarısız
+            // Payment failed
             echo "OK";
         }
     } else {
@@ -154,7 +154,7 @@ public function handleCallback(Request $request)
 
 ### Service Injection
 
-Facade yerine dependency injection da kullanabilirsiniz:
+You can also use dependency injection instead of Facade:
 
 ```php
 use FurkanMeclis\PayTRLink\PayTRLinkService;
@@ -174,14 +174,14 @@ class PaymentController
 }
 ```
 
-## Spatie Laravel Settings Entegrasyonu
+## Spatie Laravel Settings Integration
 
-Paket, Spatie Laravel Settings ile entegre çalışır. Settings kullanarak ayarları veritabanında saklayabilirsiniz:
+The package works integrated with Spatie Laravel Settings. You can store settings in the database using Settings:
 
 ```php
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 
-// Settings'e değer atama
+// Assign values to Settings
 $settings = app(PayTRSettings::class);
 $settings->merchant_id = 'your_merchant_id';
 $settings->merchant_key = 'your_merchant_key';
@@ -189,7 +189,7 @@ $settings->merchant_salt = 'your_merchant_salt';
 $settings->debug_on = true;
 $settings->save();
 
-// Settings'den değer okuma (fallback ile config'den de okur)
+// Reading values from Settings (also reads from config with fallback)
 $settings = app(PayTRSettings::class);
 $merchantId = $settings->getMerchantId();
 $merchantKey = $settings->getMerchantKey();
@@ -197,14 +197,14 @@ $merchantSalt = $settings->getMerchantSalt();
 $debugMode = $settings->getDebugOn();
 ```
 
-Settings kullanıldığında, config değerleri yerine settings değerleri kullanılır. `getMerchantId()`, `getMerchantKey()`, `getMerchantSalt()` ve `getDebugOn()` metodları, settings'de değer yoksa otomatik olarak config'den değer alır.
+When Settings is used, settings values are used instead of config values. The `getMerchantId()`, `getMerchantKey()`, `getMerchantSalt()`, and `getDebugOn()` methods automatically read from config if no value exists in settings.
 
-## Fiyat Dönüşümü
+## Price Conversion
 
-PayTR API fiyatları kuruş (cents) cinsinden ister. Paket otomatik olarak TL cinsindeki fiyatı kuruşa çevirir:
+PayTR API expects prices in kuruş (cents). The package automatically converts TL prices to kuruş:
 
 ```php
-// 1500.00 TL otomatik olarak 150000 kuruşa dönüştürülür
+// 1500.00 TL is automatically converted to 150000 kuruş
 $data = CreateLinkData::from([
     'name' => 'Product',
     'price' => 1500.00, // TL
@@ -214,21 +214,21 @@ $data = CreateLinkData::from([
 
 ## Events
 
-Paket, çeşitli işlemler için event'ler yayınlar. Bu event'leri dinleyerek işlemleri takip edebilir ve gerektiğinde işlem yapabilirsiniz:
+The package dispatches events for various operations. You can track operations and perform actions when needed by listening to these events:
 
-### Event Listesi
+### Event List
 
-- `FurkanMeclis\PayTRLink\Events\LinkCreated` - Link oluşturulduğunda
-- `FurkanMeclis\PayTRLink\Events\LinkDeleted` - Link silindiğinde
-- `FurkanMeclis\PayTRLink\Events\SmsSent` - SMS gönderildiğinde
-- `FurkanMeclis\PayTRLink\Events\EmailSent` - Email gönderildiğinde
-- `FurkanMeclis\PayTRLink\Events\CallbackReceived` - Callback geldiğinde
+- `FurkanMeclis\PayTRLink\Events\LinkCreated` - When a link is created
+- `FurkanMeclis\PayTRLink\Events\LinkDeleted` - When a link is deleted
+- `FurkanMeclis\PayTRLink\Events\SmsSent` - When SMS is sent
+- `FurkanMeclis\PayTRLink\Events\EmailSent` - When email is sent
+- `FurkanMeclis\PayTRLink\Events\CallbackReceived` - When callback is received
 
-### Event Kullanımı
+### Event Usage
 
-#### Event Listener Oluşturma
+#### Creating an Event Listener
 
-`app/Listeners` klasöründe listener oluşturun:
+Create a listener in the `app/Listeners` folder:
 
 ```php
 // app/Listeners/HandleLinkCreated.php
@@ -247,7 +247,7 @@ class HandleLinkCreated implements ShouldQueue
         $linkData = $event->createLinkData;
         $response = $event->response;
 
-        // Link oluşturulduğunda yapılacak işlemler
+        // Actions to perform when link is created
         if ($response->isSuccess()) {
             logger()->info('Link created successfully', [
                 'link_id' => $response->id,
@@ -256,7 +256,7 @@ class HandleLinkCreated implements ShouldQueue
                 'price' => $linkData->price,
             ]);
 
-            // Örnek: Veritabanına kaydet
+            // Example: Save to database
             // Link::create([
             //     'paytr_link_id' => $response->id,
             //     'link' => $response->link,
@@ -267,9 +267,9 @@ class HandleLinkCreated implements ShouldQueue
 }
 ```
 
-#### Event Service Provider'da Kaydetme
+#### Registering in Event Service Provider
 
-`app/Providers/EventServiceProvider.php` dosyasında:
+In the `app/Providers/EventServiceProvider.php` file:
 
 ```php
 use App\Listeners\HandleLinkCreated;
@@ -287,22 +287,22 @@ class EventServiceProvider extends ServiceProvider
             HandleLinkCreated::class,
         ],
         LinkDeleted::class => [
-            // Listener'larınız
+            // Your listeners
         ],
         SmsSent::class => [
-            // Listener'larınız
+            // Your listeners
         ],
         EmailSent::class => [
-            // Listener'larınız
+            // Your listeners
         ],
         CallbackReceived::class => [
-            // Listener'larınız
+            // Your listeners
         ],
     ];
 }
 ```
 
-#### Callback Event Kullanımı
+#### Callback Event Usage
 
 ```php
 // app/Listeners/HandleCallbackReceived.php
@@ -318,13 +318,13 @@ class HandleCallbackReceived
         $isValid = $event->isValid;
 
         if ($isValid && $callbackData->status === 'success') {
-            // Ödeme başarılı - siparişi güncelle
+            // Payment successful - update order
             logger()->info('Payment successful', [
                 'merchant_oid' => $callbackData->merchant_oid,
                 'total_amount' => $callbackData->total_amount,
             ]);
         } else {
-            // Ödeme başarısız
+            // Payment failed
             logger()->warning('Payment failed', [
                 'merchant_oid' => $callbackData->merchant_oid,
                 'status' => $callbackData->status,
@@ -334,9 +334,9 @@ class HandleCallbackReceived
 }
 ```
 
-#### Closures ile Event Dinleme
+#### Listening to Events with Closures
 
-Event listener oluşturmak yerine closure kullanabilirsiniz:
+You can use closures instead of creating event listeners:
 
 ```php
 use FurkanMeclis\PayTRLink\Events\LinkCreated;
@@ -344,7 +344,7 @@ use Illuminate\Support\Facades\Event;
 
 Event::listen(LinkCreated::class, function (LinkCreated $event) {
     if ($event->response->isSuccess()) {
-        // Link oluşturulduğunda yapılacak işlemler
+        // Actions to perform when link is created
         logger()->info('Link created: ' . $event->response->link);
     }
 });
@@ -359,26 +359,26 @@ use FurkanMeclis\PayTRLink\Exceptions\PayTRValidationException;
 try {
     $response = PayTRLink::create($data);
 } catch (PayTRRequestException $e) {
-    // API isteği başarısız
+    // API request failed
     logger()->error('PayTR API Error', [
         'message' => $e->getMessage(),
         'response' => $e->response,
     ]);
 } catch (PayTRValidationException $e) {
-    // Validasyon hatası
+    // Validation error
     logger()->error('PayTR Validation Error', [
         'errors' => $e->errors,
     ]);
 }
 ```
 
-## Test
+## Testing
 
 ```bash
 composer test
 ```
 
-Coverage ile test:
+Test with coverage:
 
 ```bash
 composer test-coverage

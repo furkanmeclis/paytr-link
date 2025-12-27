@@ -8,11 +8,11 @@ class TestConfigCommand extends Command
 {
     public $signature = 'paytr-link:test';
 
-    public $description = 'PayTR Link konfigürasyonunu test eder';
+    public $description = 'Tests PayTR Link configuration';
 
     public function handle(): int
     {
-        $this->info('🔍 PayTR Link Konfigürasyon Testi');
+        $this->info('🔍 PayTR Link Configuration Test');
         $this->newLine();
 
         $merchantId = config('paytr-link.merchant_id');
@@ -22,17 +22,17 @@ class TestConfigCommand extends Command
         $baseUrl = config('paytr-link.api.base_url');
         $timeout = config('paytr-link.timeout', 30);
 
-        // Settings kontrolü
+        // Settings check
         $usingSettings = false;
         if (class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class)) {
             try {
                 $settings = app(\FurkanMeclis\PayTRLink\Settings\PayTRSettings::class);
-                // Settings'den değerleri al (getMerchantId zaten fallback yapıyor)
+                // Get values from Settings (getMerchantId already does fallback)
                 $settingsMerchantId = $settings->getMerchantId();
                 $settingsMerchantKey = $settings->getMerchantKey();
                 $settingsMerchantSalt = $settings->getMerchantSalt();
 
-                // Eğer Settings'de değer varsa kullan
+                // Use if value exists in Settings
                 if (! empty($settingsMerchantId) || ! empty($settingsMerchantKey) || ! empty($settingsMerchantSalt)) {
                     $usingSettings = true;
                     $merchantId = $settingsMerchantId ?: $merchantId;
@@ -41,52 +41,52 @@ class TestConfigCommand extends Command
                     $debugOn = $settings->getDebugOn();
                 }
             } catch (\Exception $e) {
-                // Settings yoksa config kullanılacak
+                // If Settings doesn't exist, config will be used
             }
         }
 
-        $this->line('📋 Konfigürasyon Bilgileri:');
+        $this->line('📋 Configuration Information:');
         $this->table(
-            ['Ayar', 'Değer', 'Durum'],
+            ['Setting', 'Value', 'Status'],
             [
                 ['Merchant ID', $this->maskValue($merchantId), $this->checkValue($merchantId)],
                 ['Merchant Key', $this->maskValue($merchantKey), $this->checkValue($merchantKey)],
                 ['Merchant Salt', $this->maskValue($merchantSalt), $this->checkValue($merchantSalt)],
-                ['Debug Mode', $debugOn ? 'Açık' : 'Kapalı', '✓'],
+                ['Debug Mode', $debugOn ? 'On' : 'Off', '✓'],
                 ['Base URL', $baseUrl, '✓'],
-                ['Timeout', $timeout.' saniye', '✓'],
-                ['Kaynak', $usingSettings ? 'Settings (DB)' : 'Config', '✓'],
+                ['Timeout', $timeout.' seconds', '✓'],
+                ['Source', $usingSettings ? 'Settings (DB)' : 'Config', '✓'],
             ]
         );
 
         $this->newLine();
 
-        // Validasyon kontrolü
+        // Validation check
         $hasErrors = false;
         $errors = [];
 
         if (empty($merchantId)) {
-            $errors[] = '❌ Merchant ID boş!';
+            $errors[] = '❌ Merchant ID is empty!';
             $hasErrors = true;
         }
 
         if (empty($merchantKey)) {
-            $errors[] = '❌ Merchant Key boş!';
+            $errors[] = '❌ Merchant Key is empty!';
             $hasErrors = true;
         }
 
         if (empty($merchantSalt)) {
-            $errors[] = '❌ Merchant Salt boş!';
+            $errors[] = '❌ Merchant Salt is empty!';
             $hasErrors = true;
         }
 
         if ($hasErrors) {
-            $this->error('⚠️  Konfigürasyon Hataları:');
+            $this->error('⚠️  Configuration Errors:');
             foreach ($errors as $error) {
                 $this->line($error);
             }
             $this->newLine();
-            $this->line('💡 Çözüm: .env dosyanıza PayTR bilgilerinizi ekleyin:');
+            $this->line('💡 Solution: Add your PayTR credentials to your .env file:');
             $this->line('   PAYTR_MERCHANT_ID=your_merchant_id');
             $this->line('   PAYTR_MERCHANT_KEY=your_merchant_key');
             $this->line('   PAYTR_MERCHANT_SALT=your_merchant_salt');
@@ -94,9 +94,9 @@ class TestConfigCommand extends Command
             return self::FAILURE;
         }
 
-        $this->info('✅ Tüm konfigürasyon ayarları doğru!');
+        $this->info('✅ All configuration settings are correct!');
         $this->newLine();
-        $this->line('🎉 PayTR Link paketi kullanıma hazır!');
+        $this->line('🎉 PayTR Link package is ready to use!');
 
         return self::SUCCESS;
     }
@@ -109,7 +109,7 @@ class TestConfigCommand extends Command
     protected function maskValue(?string $value): string
     {
         if (empty($value)) {
-            return '<boş>';
+            return '<empty>';
         }
 
         if (strlen($value) <= 8) {

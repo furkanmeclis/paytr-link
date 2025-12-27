@@ -160,8 +160,8 @@ class PayTRLinkService
 
         $postData = [
             'merchant_id' => $merchantId,
-            'id' => $data->link_id, // String olarak gönderilmeli (örn: xNK7erZ)
-            'cell_phone' => $data->phone, // String olarak gönderilmeli (05 ile başlayan 11 haneli numara)
+            'id' => $data->link_id, // Must be sent as string (e.g: xNK7erZ)
+            'cell_phone' => $data->phone, // Must be sent as string (11-digit number starting with 05)
             'paytr_token' => $paytrToken,
             'debug_on' => $debugOn,
         ];
@@ -192,7 +192,7 @@ class PayTRLinkService
 
         $postData = [
             'merchant_id' => $merchantId,
-            'id' => $data->link_id, // String olarak gönderilmeli (örn: xNK7erZ)
+            'id' => $data->link_id, // Must be sent as string (e.g: xNK7erZ)
             'email' => $data->email,
             'paytr_token' => $paytrToken,
             'debug_on' => $debugOn,

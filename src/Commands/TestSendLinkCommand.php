@@ -16,95 +16,95 @@ class TestSendLinkCommand extends Command
 {
     public $signature = 'paytr-link:test-send';
 
-    public $description = 'Rastgele bir ödeme linki oluşturur ve email/SMS ile gönderir';
+    public $description = 'Creates a random payment link and sends it via email/SMS';
 
     public function handle(): int
     {
-        $this->info('🧪 PayTR Link Test Gönderimi');
+        $this->info('🧪 PayTR Link Test Sending');
         $this->newLine();
 
-        // Konfigürasyon kontrolü
+        // Configuration check
         $merchantId = config('paytr-link.merchant_id');
         $merchantKey = config('paytr-link.merchant_key');
         $merchantSalt = config('paytr-link.merchant_salt');
 
         if (empty($merchantId) || empty($merchantKey) || empty($merchantSalt)) {
-            $this->error('❌ PayTR konfigürasyonu eksik!');
-            $this->line('💡 Önce "php artisan paytr-link:test" komutunu çalıştırın.');
+            $this->error('❌ PayTR configuration is missing!');
+            $this->line('💡 First run "php artisan paytr-link:test" command.');
 
             return self::FAILURE;
         }
 
-        // Gönderim tipini seç
+        // Select sending type
         $sendType = $this->choice(
-            'Gönderim tipini seçin',
+            'Select sending type',
             ['email', 'sms'],
             0
         );
 
         $this->newLine();
 
-        // Email veya SMS için gerekli bilgileri al
+        // Get required information for email or SMS
         if ($sendType === 'email') {
-            $email = $this->ask('Email adresini girin');
+            $email = $this->ask('Enter email address');
 
             if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $this->error('❌ Geçersiz email adresi!');
+                $this->error('❌ Invalid email address!');
 
                 return self::FAILURE;
             }
         } else {
-            $phone = $this->ask('Telefon numarasını girin (örn: 05000000000)');
+            $phone = $this->ask('Enter phone number (e.g: 05000000000)');
 
             if (empty($phone)) {
-                $this->error('❌ Telefon numarası boş olamaz!');
+                $this->error('❌ Phone number cannot be empty!');
 
                 return self::FAILURE;
             }
 
-            // Telefon numarası validasyonu: 05 ile başlamalı ve 11 hane olmalı
+            // Phone number validation: must start with 05 and be 11 digits
             if (! preg_match('/^05\d{9}$/', $phone)) {
-                $this->error('❌ Geçersiz telefon numarası! 05 ile başlamalı ve 11 hane olmalıdır (örn: 05000000000)');
+                $this->error('❌ Invalid phone number! Must start with 05 and be 11 digits (e.g: 05000000000)');
 
                 return self::FAILURE;
             }
         }
 
         $this->newLine();
-        $this->info('🔄 Rastgele ödeme linki oluşturuluyor...');
+        $this->info('🔄 Creating random payment link...');
 
         try {
-            // Rastgele link bilgileri oluştur
+            // Generate random link data
             $randomData = $this->generateRandomLinkData();
 
-            $this->line('📝 Oluşturulan link bilgileri:');
+            $this->line('📝 Created link information:');
             $this->table(
-                ['Özellik', 'Değer'],
+                ['Property', 'Value'],
                 [
-                    ['İsim', $randomData['name']],
-                    ['Fiyat', number_format($randomData['price'], 2).' '.$randomData['currency']->value],
-                    ['Tip', $randomData['link_type'] === LinkTypeEnum::Product ? 'Ürün' : 'Toplu Ödeme'],
-                    ['Para Birimi', $randomData['currency']->value],
-                    ['Max Taksit', (string) $randomData['max_installment']],
+                    ['Name', $randomData['name']],
+                    ['Price', number_format($randomData['price'], 2).' '.$randomData['currency']->value],
+                    ['Type', $randomData['link_type'] === LinkTypeEnum::Product ? 'Product' : 'Bulk Payment'],
+                    ['Currency', $randomData['currency']->value],
+                    ['Max Installment', (string) $randomData['max_installment']],
                 ]
             );
             $this->newLine();
 
-            $this->line('⏳ Link oluşturuluyor...');
+            $this->line('⏳ Creating link...');
 
             $createLinkData = CreateLinkData::from($randomData);
             $createResponse = PayTRLink::create($createLinkData);
 
             if (! $createResponse->isSuccess() || ! $createResponse->id) {
-                $this->error('❌ Link oluşturulamadı!');
+                $this->error('❌ Link could not be created!');
                 $this->newLine();
 
                 if ($createResponse->message) {
-                    $this->line('Mesaj: '.$createResponse->message);
+                    $this->line('Message: '.$createResponse->message);
                 }
 
                 if ($createResponse->errors) {
-                    $this->line('Hatalar:');
+                    $this->line('Errors:');
                     foreach ($createResponse->errors as $error) {
                         $this->line('  - '.$error);
                     }
@@ -114,12 +114,12 @@ class TestSendLinkCommand extends Command
             }
 
             $linkId = $createResponse->id;
-            $this->info('✅ Link başarıyla oluşturuldu! (ID: '.$linkId.')');
+            $this->info('✅ Link created successfully! (ID: '.$linkId.')');
             $this->newLine();
 
-            // Email veya SMS gönder
+            // Send email or SMS
             if ($sendType === 'email') {
-                $this->line('📧 Email gönderiliyor...');
+                $this->line('📧 Sending email...');
 
                 $sendEmailData = SendEmailData::from([
                     'link_id' => $linkId,
@@ -129,32 +129,32 @@ class TestSendLinkCommand extends Command
                 $sendResponse = PayTRLink::sendEmail($sendEmailData);
 
                 if ($sendResponse->isSuccess()) {
-                    $this->info('✅ Email başarıyla gönderildi!');
+                    $this->info('✅ Email sent successfully!');
                     $this->newLine();
-                    $this->line('📬 Gönderilen email: '.$email);
+                    $this->line('📬 Sent email: '.$email);
                 } else {
-                    $this->error('❌ Email gönderilemedi!');
+                    $this->error('❌ Email could not be sent!');
                     $this->newLine();
-                    $this->line('Durum: '.$sendResponse->status);
+                    $this->line('Status: '.$sendResponse->status);
                     $this->newLine();
 
                     if ($sendResponse->err_msg) {
-                        $this->line('Hata Mesajı: '.$sendResponse->err_msg);
+                        $this->line('Error Message: '.$sendResponse->err_msg);
                         $this->newLine();
                     }
 
                     if ($sendResponse->message) {
-                        $this->line('Mesaj: '.$sendResponse->message);
+                        $this->line('Message: '.$sendResponse->message);
                         $this->newLine();
                     }
 
                     if ($sendResponse->reason) {
-                        $this->line('Sebep: '.$sendResponse->reason);
+                        $this->line('Reason: '.$sendResponse->reason);
                         $this->newLine();
                     }
 
                     if ($sendResponse->errors) {
-                        $this->line('Hatalar:');
+                        $this->line('Errors:');
                         foreach ($sendResponse->errors as $error) {
                             $this->line('  - '.$error);
                         }
@@ -164,7 +164,7 @@ class TestSendLinkCommand extends Command
                     return self::FAILURE;
                 }
             } else {
-                $this->line('📱 SMS gönderiliyor...');
+                $this->line('📱 Sending SMS...');
 
                 $sendSmsData = SendSmsData::from([
                     'link_id' => $linkId,
@@ -174,37 +174,37 @@ class TestSendLinkCommand extends Command
                 $sendResponse = PayTRLink::sendSms($sendSmsData);
 
                 if ($sendResponse->isSuccess()) {
-                    $this->info('✅ SMS başarıyla gönderildi!');
+                    $this->info('✅ SMS sent successfully!');
                     $this->newLine();
-                    $this->line('📱 Gönderilen telefon: '.$phone);
+                    $this->line('📱 Sent phone: '.$phone);
                 } else {
-                    $this->error('❌ SMS gönderilemedi!');
+                    $this->error('❌ SMS could not be sent!');
                     $this->newLine();
-                    $this->line('Durum: '.$sendResponse->status);
+                    $this->line('Status: '.$sendResponse->status);
                     $this->newLine();
 
-                    // Tam response'u göster
-                    $this->line('📋 Tam Response:');
+                    // Show full response
+                    $this->line('📋 Full Response:');
                     $this->line(json_encode($sendResponse->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
                     $this->newLine();
 
                     if ($sendResponse->err_msg) {
-                        $this->line('Hata Mesajı: '.$sendResponse->err_msg);
+                        $this->line('Error Message: '.$sendResponse->err_msg);
                         $this->newLine();
                     }
 
                     if ($sendResponse->message) {
-                        $this->line('Mesaj: '.$sendResponse->message);
+                        $this->line('Message: '.$sendResponse->message);
                         $this->newLine();
                     }
 
                     if ($sendResponse->reason) {
-                        $this->line('Sebep: '.$sendResponse->reason);
+                        $this->line('Reason: '.$sendResponse->reason);
                         $this->newLine();
                     }
 
                     if ($sendResponse->errors) {
-                        $this->line('Hatalar:');
+                        $this->line('Errors:');
                         foreach ($sendResponse->errors as $error) {
                             $this->line('  - '.$error);
                         }
@@ -218,34 +218,34 @@ class TestSendLinkCommand extends Command
             $this->newLine();
 
             if ($createResponse->link) {
-                $this->info('🔗 Ödeme Linki:');
+                $this->info('🔗 Payment Link:');
                 $this->line($createResponse->link);
                 $this->newLine();
             }
 
-            $this->info('✨ Test başarıyla tamamlandı!');
+            $this->info('✨ Test completed successfully!');
 
             return self::SUCCESS;
         } catch (PayTRRequestException $e) {
-            $this->error('❌ API İsteği Başarısız!');
+            $this->error('❌ API Request Failed!');
             $this->newLine();
-            $this->line('Hata: '.$e->getMessage());
+            $this->line('Error: '.$e->getMessage());
 
             if ($e->response) {
                 $this->newLine();
-                $this->line('Yanıt Detayları:');
+                $this->line('Response Details:');
                 $this->line(json_encode($e->response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             }
 
             return self::FAILURE;
         } catch (PayTRValidationException $e) {
-            $this->error('❌ Validasyon Hatası!');
+            $this->error('❌ Validation Error!');
             $this->newLine();
-            $this->line('Hata: '.$e->getMessage());
+            $this->line('Error: '.$e->getMessage());
 
             if (! empty($e->errors)) {
                 $this->newLine();
-                $this->line('Hatalar:');
+                $this->line('Errors:');
                 foreach ($e->errors as $field => $errors) {
                     foreach ((array) $errors as $error) {
                         $this->line('  - '.$field.': '.$error);
@@ -255,29 +255,29 @@ class TestSendLinkCommand extends Command
 
             return self::FAILURE;
         } catch (\Exception $e) {
-            $this->error('❌ Beklenmeyen Hata!');
+            $this->error('❌ Unexpected Error!');
             $this->newLine();
-            $this->line('Hata: '.$e->getMessage());
-            $this->line('Dosya: '.$e->getFile().':'.$e->getLine());
+            $this->line('Error: '.$e->getMessage());
+            $this->line('File: '.$e->getFile().':'.$e->getLine());
 
             return self::FAILURE;
         }
     }
 
     /**
-     * Rastgele link verisi oluştur
+     * Generate random link data
      */
     protected function generateRandomLinkData(): array
     {
         $products = [
-            'Test Ürünü - Laptop',
-            'Test Ürünü - Telefon',
-            'Test Ürünü - Tablet',
-            'Test Ürünü - Kulaklık',
-            'Test Ürünü - Klavye',
-            'Test Ürünü - Mouse',
-            'Test Ürünü - Monitör',
-            'Test Ürünü - Kamera',
+            'Test Product - Laptop',
+            'Test Product - Phone',
+            'Test Product - Tablet',
+            'Test Product - Headphones',
+            'Test Product - Keyboard',
+            'Test Product - Mouse',
+            'Test Product - Monitor',
+            'Test Product - Camera',
         ];
 
         $linkTypes = [LinkTypeEnum::Product, LinkTypeEnum::Collection];
@@ -286,10 +286,10 @@ class TestSendLinkCommand extends Command
         $selectedType = $linkTypes[array_rand($linkTypes)];
         $selectedCurrency = $currencies[array_rand($currencies)];
 
-        // Rastgele fiyat (10-1000 arası)
+        // Random price (between 10-1000)
         $price = rand(10, 1000) + (rand(0, 99) / 100);
 
-        // Rastgele max taksit (1-12 arası)
+        // Random max installment (between 1-12)
         $maxInstallment = rand(1, 12);
 
         $data = [
@@ -299,10 +299,10 @@ class TestSendLinkCommand extends Command
             'link_type' => $selectedType,
             'max_installment' => $maxInstallment,
             'lang' => 'tr',
-            'description' => 'Bu bir test linkidir. Rastgele oluşturulmuştur.',
+            'description' => 'This is a test link. Randomly generated.',
         ];
 
-        // Collection tipi için email ekle
+        // Add email for Collection type
         if ($selectedType === LinkTypeEnum::Collection) {
             $data['email'] = 'test@example.com';
         }
