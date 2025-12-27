@@ -51,4 +51,3 @@ class PublishSettingsMigrationCommand extends Command
         return self::SUCCESS;
     }
 }
-
