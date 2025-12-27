@@ -2,6 +2,10 @@
 
 All notable changes to `furkanmeclis/paytr-link` will be documented in this file.
 
+## V0.6 - 2025-12-27
+
+**Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0.5...V0.6
+
 ## V0.5 - 2025-12-27
 
 **Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0.3...v0.5
@@ -43,11 +47,13 @@ composer require furkanmeclis/paytr-link
 
 
 
+
 ```
 Config dosyasını yayınlayın:
 
 ```bash
 php artisan vendor:publish --tag="paytr-link-config"
+
 
 
 
@@ -64,6 +70,7 @@ php artisan migrate
 
 
 
+
 ```
 #### Yapılandırma
 
@@ -74,6 +81,7 @@ PAYTR_MERCHANT_ID=your_merchant_id
 PAYTR_MERCHANT_KEY=your_merchant_key
 PAYTR_MERCHANT_SALT=your_merchant_salt
 PAYTR_DEBUG_ON=1
+
 
 
 
@@ -111,6 +119,7 @@ if ($response->isSuccess()) {
 
 
 
+
 ```
 ##### Collection Link Oluşturma
 
@@ -125,6 +134,7 @@ $data = CreateLinkData::from([
 ]);
 
 $response = PayTRLink::create($data);
+
 
 
 
@@ -145,6 +155,7 @@ $response = PayTRLink::delete('link_id_here');
 
 
 
+
 ```
 ##### SMS Gönderme
 
@@ -159,6 +170,7 @@ $response = PayTRLink::sendSms(SendSmsData::from([
 
 
 
+
 ```
 ##### Email Gönderme
 
@@ -169,6 +181,7 @@ $response = PayTRLink::sendEmail(SendEmailData::from([
     'link_id' => 'link_id_here',
     'email' => 'customer@example.com',
 ]));
+
 
 
 
@@ -200,6 +213,7 @@ public function handleCallback(Request $request)
 
 
 
+
 ```
 ##### Service Injection
 
@@ -225,6 +239,7 @@ class PaymentController
 
 
 
+
 ```
 #### Spatie Laravel Settings Entegrasyonu
 
@@ -243,6 +258,7 @@ $settings->save();
 
 
 
+
 ```
 Settings kullanıldığında, config değerleri yerine settings değerleri kullanılır.
 
@@ -257,6 +273,7 @@ $data = CreateLinkData::from([
     'price' => 1500.00, // TL
     // ...
 ]);
+
 
 
 
@@ -286,6 +303,7 @@ try {
 
 
 
+
 ```
 #### Test
 
@@ -295,11 +313,13 @@ composer test
 
 
 
+
 ```
 Coverage ile test:
 
 ```bash
 composer test-coverage
+
 
 
 
