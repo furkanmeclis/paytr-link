@@ -180,13 +180,21 @@ The package works integrated with Spatie Laravel Settings. You can store setting
 
 ### Setting Up Settings
 
-First, set up the settings structure in the database:
+The package automatically registers PayTRSettings with Spatie Laravel Settings. To use settings:
 
+1. **Publish and run migrations** (if you haven't already):
+```bash
+php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
+php artisan paytr-link:publish-settings-migration
+php artisan migrate
+```
+
+2. **Or use the setup command** (automatically creates settings entries):
 ```bash
 php artisan paytr-link:setup-settings
 ```
 
-This will create the necessary settings entries in the database. To also initialize settings with values from your config file, use the `--init` flag:
+To also initialize settings with values from your config file, use the `--init` flag:
 
 ```bash
 php artisan paytr-link:setup-settings --init

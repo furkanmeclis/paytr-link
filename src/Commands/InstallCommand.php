@@ -50,9 +50,19 @@ class InstallCommand extends Command
                     ]);
                     $this->newLine();
                     $this->info('✅ Settings migrations published!');
-                    $this->line('💡 To run migrations: php artisan migrate');
                 } catch (\Exception $e) {
                     $this->warn('⚠️  Settings migrations could not be published: '.$e->getMessage());
+                }
+
+                // Publish PayTR Link settings migrations with dynamic timestamp
+                $this->line('⚙️  Publishing PayTR Link settings migrations...');
+                try {
+                    $this->call('paytr-link:publish-settings-migration');
+                    $this->newLine();
+                    $this->info('✅ PayTR Link settings migrations published!');
+                    $this->line('💡 To run migrations: php artisan migrate');
+                } catch (\Exception $e) {
+                    $this->warn('⚠️  PayTR Link settings migrations could not be published: '.$e->getMessage());
                 }
             } else {
                 $this->warn('⚠️  Spatie Laravel Settings package is not installed.');
