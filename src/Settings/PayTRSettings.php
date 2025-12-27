@@ -6,13 +6,13 @@ use Spatie\LaravelSettings\Settings;
 
 class PayTRSettings extends Settings
 {
-    public string $merchant_id = '';
+    public ?string $merchant_id;
 
-    public string $merchant_key = '';
+    public ?string $merchant_key;
 
-    public string $merchant_salt = '';
+    public ?string $merchant_salt;
 
-    public bool $debug_on = false;
+    public ?bool $debug_on;
 
     public static function group(): string
     {
