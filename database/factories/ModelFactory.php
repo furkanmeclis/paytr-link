@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+namespace FurkanMeclis\PayTRLink\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

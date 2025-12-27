@@ -1,24 +1,31 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "furkanmeclis/paytr-link",
+    "description": "PayTR Link API integration for Laravel",
     "keywords": [
-        ":vendor_name",
+        "furkanmeclis",
         "laravel",
-        ":package_slug"
+        "paytr-link",
+        "paytr",
+        "payment",
+        "link"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/furkanmeclis/paytr-link",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Furkan Meclis",
+            "email": "furkanmeclis@icloud.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.4",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^11.0||^12.0"
+        "spatie/laravel-data": "^4.0",
+        "spatie/laravel-settings": "^3.0",
+        "illuminate/contracts": "^11.0||^12.0",
+        "illuminate/support": "^11.0||^12.0",
+        "illuminate/http": "^11.0||^12.0"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
@@ -35,13 +42,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "FurkanMeclis\\PayTRLink\\": "src/",
+            "FurkanMeclis\\PayTRLink\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "FurkanMeclis\\PayTRLink\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +70,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "FurkanMeclis\\PayTRLink\\PayTRLinkServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "PayTRLink": "FurkanMeclis\\PayTRLink\\Facades\\PayTRLink"
             }
         }
     },
