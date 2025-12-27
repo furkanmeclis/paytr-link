@@ -178,6 +178,22 @@ class PaymentController
 
 The package works integrated with Spatie Laravel Settings. You can store settings in the database using Settings:
 
+### Setting Up Settings
+
+First, set up the settings structure in the database:
+
+```bash
+php artisan paytr-link:setup-settings
+```
+
+This will create the necessary settings entries in the database. To also initialize settings with values from your config file, use the `--init` flag:
+
+```bash
+php artisan paytr-link:setup-settings --init
+```
+
+### Using Settings
+
 ```php
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 

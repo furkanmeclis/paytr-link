@@ -81,6 +81,9 @@ class InstallCommand extends Command
             $this->newLine();
             $this->line('4. Run migrations (if you will use Settings):');
             $this->line('   php artisan migrate');
+            $this->newLine();
+            $this->line('5. Set up PayTR Settings:');
+            $this->line('   php artisan paytr-link:setup-settings --init');
         }
 
         return self::SUCCESS;
