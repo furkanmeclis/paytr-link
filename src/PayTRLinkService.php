@@ -22,7 +22,7 @@ class PayTRLinkService
         // Load settings if available, otherwise use config
         if (! $this->settings) {
             // Only try to load settings if laravel-settings is properly configured
-            if (class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class) 
+            if (class_exists(\Spatie\LaravelSettings\LaravelSettingsServiceProvider::class)
                 && config('settings.default_repository') !== null) {
                 try {
                     $this->settings = app(PayTRSettings::class);
