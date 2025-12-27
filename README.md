@@ -11,6 +11,7 @@ PayTR Link API entegrasyonu için Laravel paketi. Bu paket, PayTR Link API ile k
 - ✅ PayTR Link API tüm endpoint'leri
 - ✅ Type-safe Data Transfer Objects (Spatie Laravel Data)
 - ✅ Settings yönetimi (Spatie Laravel Settings)
+- ✅ Event sistemi (Link oluşturma, silme, SMS/Email gönderme, Callback)
 - ✅ Kolay kullanım için Facade desteği
 - ✅ Kapsamlı test coverage
 - ✅ PHP 8.1+ desteği
@@ -209,6 +210,144 @@ $data = CreateLinkData::from([
     'price' => 1500.00, // TL
     // ...
 ]);
+```
+
+## Events
+
+Paket, çeşitli işlemler için event'ler yayınlar. Bu event'leri dinleyerek işlemleri takip edebilir ve gerektiğinde işlem yapabilirsiniz:
+
+### Event Listesi
+
+- `FurkanMeclis\PayTRLink\Events\LinkCreated` - Link oluşturulduğunda
+- `FurkanMeclis\PayTRLink\Events\LinkDeleted` - Link silindiğinde
+- `FurkanMeclis\PayTRLink\Events\SmsSent` - SMS gönderildiğinde
+- `FurkanMeclis\PayTRLink\Events\EmailSent` - Email gönderildiğinde
+- `FurkanMeclis\PayTRLink\Events\CallbackReceived` - Callback geldiğinde
+
+### Event Kullanımı
+
+#### Event Listener Oluşturma
+
+`app/Listeners` klasöründe listener oluşturun:
+
+```php
+// app/Listeners/HandleLinkCreated.php
+namespace App\Listeners;
+
+use FurkanMeclis\PayTRLink\Events\LinkCreated;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+
+class HandleLinkCreated implements ShouldQueue
+{
+    use InteractsWithQueue;
+
+    public function handle(LinkCreated $event): void
+    {
+        $linkData = $event->createLinkData;
+        $response = $event->response;
+
+        // Link oluşturulduğunda yapılacak işlemler
+        if ($response->isSuccess()) {
+            logger()->info('Link created successfully', [
+                'link_id' => $response->id,
+                'link' => $response->link,
+                'name' => $linkData->name,
+                'price' => $linkData->price,
+            ]);
+
+            // Örnek: Veritabanına kaydet
+            // Link::create([
+            //     'paytr_link_id' => $response->id,
+            //     'link' => $response->link,
+            //     ...
+            // ]);
+        }
+    }
+}
+```
+
+#### Event Service Provider'da Kaydetme
+
+`app/Providers/EventServiceProvider.php` dosyasında:
+
+```php
+use App\Listeners\HandleLinkCreated;
+use FurkanMeclis\PayTRLink\Events\LinkCreated;
+use FurkanMeclis\PayTRLink\Events\LinkDeleted;
+use FurkanMeclis\PayTRLink\Events\SmsSent;
+use FurkanMeclis\PayTRLink\Events\EmailSent;
+use FurkanMeclis\PayTRLink\Events\CallbackReceived;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+
+class EventServiceProvider extends ServiceProvider
+{
+    protected $listen = [
+        LinkCreated::class => [
+            HandleLinkCreated::class,
+        ],
+        LinkDeleted::class => [
+            // Listener'larınız
+        ],
+        SmsSent::class => [
+            // Listener'larınız
+        ],
+        EmailSent::class => [
+            // Listener'larınız
+        ],
+        CallbackReceived::class => [
+            // Listener'larınız
+        ],
+    ];
+}
+```
+
+#### Callback Event Kullanımı
+
+```php
+// app/Listeners/HandleCallbackReceived.php
+namespace App\Listeners;
+
+use FurkanMeclis\PayTRLink\Events\CallbackReceived;
+
+class HandleCallbackReceived
+{
+    public function handle(CallbackReceived $event): void
+    {
+        $callbackData = $event->callbackData;
+        $isValid = $event->isValid;
+
+        if ($isValid && $callbackData->status === 'success') {
+            // Ödeme başarılı - siparişi güncelle
+            logger()->info('Payment successful', [
+                'merchant_oid' => $callbackData->merchant_oid,
+                'total_amount' => $callbackData->total_amount,
+            ]);
+        } else {
+            // Ödeme başarısız
+            logger()->warning('Payment failed', [
+                'merchant_oid' => $callbackData->merchant_oid,
+                'status' => $callbackData->status,
+            ]);
+        }
+    }
+}
+```
+
+#### Closures ile Event Dinleme
+
+Event listener oluşturmak yerine closure kullanabilirsiniz:
+
+```php
+use FurkanMeclis\PayTRLink\Events\LinkCreated;
+use Illuminate\Support\Facades\Event;
+
+Event::listen(LinkCreated::class, function (LinkCreated $event) {
+    if ($event->response->isSuccess()) {
+        // Link oluşturulduğunda yapılacak işlemler
+        logger()->info('Link created: ' . $event->response->link);
+    }
+});
 ```
 
 ## Exception Handling

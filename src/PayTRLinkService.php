@@ -8,10 +8,16 @@ use FurkanMeclis\PayTRLink\Data\DeleteLinkData;
 use FurkanMeclis\PayTRLink\Data\PayTRResponseData;
 use FurkanMeclis\PayTRLink\Data\SendEmailData;
 use FurkanMeclis\PayTRLink\Data\SendSmsData;
+use FurkanMeclis\PayTRLink\Events\CallbackReceived;
+use FurkanMeclis\PayTRLink\Events\EmailSent;
+use FurkanMeclis\PayTRLink\Events\LinkCreated;
+use FurkanMeclis\PayTRLink\Events\LinkDeleted;
+use FurkanMeclis\PayTRLink\Events\SmsSent;
 use FurkanMeclis\PayTRLink\Exceptions\PayTRRequestException;
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 use FurkanMeclis\PayTRLink\Support\PriceConverter;
 use FurkanMeclis\PayTRLink\Support\TokenGenerator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 
 class PayTRLinkService
@@ -101,7 +107,11 @@ class PayTRLinkService
             $postData
         );
 
-        return PayTRResponseData::from($response);
+        $responseData = PayTRResponseData::from($response);
+
+        Event::dispatch(new LinkCreated($data, $responseData));
+
+        return $responseData;
     }
 
     /**
@@ -129,7 +139,11 @@ class PayTRLinkService
             $postData
         );
 
-        return PayTRResponseData::from($response);
+        $responseData = PayTRResponseData::from($response);
+
+        Event::dispatch(new LinkDeleted($linkId, $responseData));
+
+        return $responseData;
     }
 
     /**
@@ -157,7 +171,11 @@ class PayTRLinkService
             $postData
         );
 
-        return PayTRResponseData::from($response);
+        $responseData = PayTRResponseData::from($response);
+
+        Event::dispatch(new SmsSent($data, $responseData));
+
+        return $responseData;
     }
 
     /**
@@ -185,7 +203,11 @@ class PayTRLinkService
             $postData
         );
 
-        return PayTRResponseData::from($response);
+        $responseData = PayTRResponseData::from($response);
+
+        Event::dispatch(new EmailSent($data, $responseData));
+
+        return $responseData;
     }
 
     /**
@@ -201,7 +223,11 @@ class PayTRLinkService
                 $callbackData->status.$callbackData->total_amount;
         $expectedHash = base64_encode(hash_hmac('sha256', $data, $merchantKey, true));
 
-        return hash_equals($expectedHash, $callbackData->hash);
+        $isValid = hash_equals($expectedHash, $callbackData->hash);
+
+        Event::dispatch(new CallbackReceived($callbackData, $isValid));
+
+        return $isValid;
     }
 
     /**
