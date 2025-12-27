@@ -4,7 +4,6 @@ namespace FurkanMeclis\PayTRLink\Commands;
 
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -134,21 +133,21 @@ class SetupSettingsCommand extends Command
 
             if (! empty($merchantId)) {
                 $settings->merchant_id = $merchantId;
-                $this->line("  ✓ Set merchant_id from config");
+                $this->line('  ✓ Set merchant_id from config');
             }
 
             if (! empty($merchantKey)) {
                 $settings->merchant_key = $merchantKey;
-                $this->line("  ✓ Set merchant_key from config");
+                $this->line('  ✓ Set merchant_key from config');
             }
 
             if (! empty($merchantSalt)) {
                 $settings->merchant_salt = $merchantSalt;
-                $this->line("  ✓ Set merchant_salt from config");
+                $this->line('  ✓ Set merchant_salt from config');
             }
 
             $settings->debug_on = (bool) $debugOn;
-            $this->line("  ✓ Set debug_on from config");
+            $this->line('  ✓ Set debug_on from config');
 
             $settings->save();
 
@@ -164,4 +163,3 @@ class SetupSettingsCommand extends Command
         }
     }
 }
-
