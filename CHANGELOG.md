@@ -2,6 +2,10 @@
 
 All notable changes to `furkanmeclis/paytr-link` will be documented in this file.
 
+## V0.1 Beta - 2025-12-27
+
+**Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0_beta...v0.1_beta
+
 ## V0 Beta - 2025-12-27
 
 **Full Changelog**: https://github.com/furkanmeclis/paytr-link-api/commits/v0_beta
