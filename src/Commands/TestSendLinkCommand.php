@@ -135,9 +135,22 @@ class TestSendLinkCommand extends Command
                 } else {
                     $this->error('❌ Email gönderilemedi!');
                     $this->newLine();
+                    $this->line('Durum: '.$sendResponse->status);
+                    $this->newLine();
+
+                    if ($sendResponse->err_msg) {
+                        $this->line('Hata Mesajı: '.$sendResponse->err_msg);
+                        $this->newLine();
+                    }
 
                     if ($sendResponse->message) {
                         $this->line('Mesaj: '.$sendResponse->message);
+                        $this->newLine();
+                    }
+
+                    if ($sendResponse->reason) {
+                        $this->line('Sebep: '.$sendResponse->reason);
+                        $this->newLine();
                     }
 
                     if ($sendResponse->errors) {
@@ -145,6 +158,7 @@ class TestSendLinkCommand extends Command
                         foreach ($sendResponse->errors as $error) {
                             $this->line('  - '.$error);
                         }
+                        $this->newLine();
                     }
 
                     return self::FAILURE;
@@ -166,9 +180,27 @@ class TestSendLinkCommand extends Command
                 } else {
                     $this->error('❌ SMS gönderilemedi!');
                     $this->newLine();
+                    $this->line('Durum: '.$sendResponse->status);
+                    $this->newLine();
+                    
+                    // Tam response'u göster
+                    $this->line('📋 Tam Response:');
+                    $this->line(json_encode($sendResponse->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+                    $this->newLine();
+
+                    if ($sendResponse->err_msg) {
+                        $this->line('Hata Mesajı: '.$sendResponse->err_msg);
+                        $this->newLine();
+                    }
 
                     if ($sendResponse->message) {
                         $this->line('Mesaj: '.$sendResponse->message);
+                        $this->newLine();
+                    }
+
+                    if ($sendResponse->reason) {
+                        $this->line('Sebep: '.$sendResponse->reason);
+                        $this->newLine();
                     }
 
                     if ($sendResponse->errors) {
@@ -176,6 +208,7 @@ class TestSendLinkCommand extends Command
                         foreach ($sendResponse->errors as $error) {
                             $this->line('  - '.$error);
                         }
+                        $this->newLine();
                     }
 
                     return self::FAILURE;

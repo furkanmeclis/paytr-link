@@ -11,6 +11,8 @@ class PayTRResponseData extends Data
         public ?string $link = null,
         public ?string $id = null,
         public ?string $message = null,
+        public ?string $err_msg = null,
+        public ?string $reason = null,
         public ?array $errors = null,
     ) {}
 
