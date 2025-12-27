@@ -2,6 +2,10 @@
 
 All notable changes to `furkanmeclis/paytr-link` will be documented in this file.
 
+## V0.12 - 2025-12-27
+
+**Full Changelog**: https://github.com/furkanmeclis/paytr-link/compare/v0.11...v0.12
+
 ## V0.11 - 2025-12-27
 
 ### PayTR Link API Laravel Package
@@ -29,11 +33,13 @@ Install the package via Composer:
 ```bash
 composer require furkanmeclis/paytr-link
 
+
 ```
 Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="paytr-link-config"
+
 
 ```
 If you're going to use Spatie Laravel Settings:
@@ -41,6 +47,7 @@ If you're going to use Spatie Laravel Settings:
 ```bash
 php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
 php artisan migrate
+
 
 ```
 #### Configuration
@@ -52,6 +59,7 @@ PAYTR_MERCHANT_ID=your_merchant_id
 PAYTR_MERCHANT_KEY=your_merchant_key
 PAYTR_MERCHANT_SALT=your_merchant_salt
 PAYTR_DEBUG_ON=1
+
 
 ```
 You can also configure via the config file (`config/paytr-link.php`).
@@ -83,6 +91,7 @@ if ($response->isSuccess()) {
     $linkId = $response->id;
 }
 
+
 ```
 ##### Creating a Collection Link
 
@@ -98,6 +107,7 @@ $data = CreateLinkData::from([
 
 $response = PayTRLink::create($data);
 
+
 ```
 ##### Deleting a Link
 
@@ -111,6 +121,7 @@ $response = PayTRLink::delete(DeleteLinkData::from([
 // Or directly with a string
 $response = PayTRLink::delete('link_id_here');
 
+
 ```
 ##### Sending SMS
 
@@ -122,6 +133,7 @@ $response = PayTRLink::sendSms(SendSmsData::from([
     'phone' => '5551234567',
 ]));
 
+
 ```
 ##### Sending Email
 
@@ -132,6 +144,7 @@ $response = PayTRLink::sendEmail(SendEmailData::from([
     'link_id' => 'link_id_here',
     'email' => 'customer@example.com',
 ]));
+
 
 ```
 ##### Callback Validation
@@ -157,6 +170,7 @@ public function handleCallback(Request $request)
     }
 }
 
+
 ```
 ##### Service Injection
 
@@ -179,6 +193,7 @@ class PaymentController
     }
 }
 
+
 ```
 #### Spatie Laravel Settings Integration
 
@@ -191,11 +206,13 @@ First, set up the settings structure in the database:
 ```bash
 php artisan paytr-link:setup-settings
 
+
 ```
 This will create the necessary settings entries in the database. To also initialize settings with values from your config file, use the `--init` flag:
 
 ```bash
 php artisan paytr-link:setup-settings --init
+
 
 ```
 ##### Using Settings
@@ -218,6 +235,7 @@ $merchantKey = $settings->getMerchantKey();
 $merchantSalt = $settings->getMerchantSalt();
 $debugMode = $settings->getDebugOn();
 
+
 ```
 When Settings is used, settings values are used instead of config values. The `getMerchantId()`, `getMerchantKey()`, `getMerchantSalt()`, and `getDebugOn()` methods automatically read from config if no value exists in settings.
 
@@ -232,6 +250,7 @@ $data = CreateLinkData::from([
     'price' => 1500.00, // TL
     // ...
 ]);
+
 
 ```
 #### Events
@@ -288,6 +307,7 @@ class HandleLinkCreated implements ShouldQueue
     }
 }
 
+
 ```
 ###### Registering in Event Service Provider
 
@@ -323,6 +343,7 @@ class EventServiceProvider extends ServiceProvider
     ];
 }
 
+
 ```
 ###### Callback Event Usage
 
@@ -355,6 +376,7 @@ class HandleCallbackReceived
     }
 }
 
+
 ```
 ###### Listening to Events with Closures
 
@@ -370,6 +392,7 @@ Event::listen(LinkCreated::class, function (LinkCreated $event) {
         logger()->info('Link created: ' . $event->response->link);
     }
 });
+
 
 ```
 #### Exception Handling
@@ -393,17 +416,20 @@ try {
     ]);
 }
 
+
 ```
 #### Testing
 
 ```bash
 composer test
 
+
 ```
 Test with coverage:
 
 ```bash
 composer test-coverage
+
 
 ```
 #### Changelog
@@ -494,11 +520,13 @@ composer require furkanmeclis/paytr-link
 
 
 
+
 ```
 Publish the config file:
 
 ```bash
 php artisan vendor:publish --tag="paytr-link-config"
+
 
 
 
@@ -527,6 +555,7 @@ php artisan migrate
 
 
 
+
 ```
 #### Configuration
 
@@ -537,6 +566,7 @@ PAYTR_MERCHANT_ID=your_merchant_id
 PAYTR_MERCHANT_KEY=your_merchant_key
 PAYTR_MERCHANT_SALT=your_merchant_salt
 PAYTR_DEBUG_ON=1
+
 
 
 
@@ -586,6 +616,7 @@ if ($response->isSuccess()) {
 
 
 
+
 ```
 ##### Creating a Collection Link
 
@@ -600,6 +631,7 @@ $data = CreateLinkData::from([
 ]);
 
 $response = PayTRLink::create($data);
+
 
 
 
@@ -632,6 +664,7 @@ $response = PayTRLink::delete('link_id_here');
 
 
 
+
 ```
 ##### Sending SMS
 
@@ -652,6 +685,7 @@ $response = PayTRLink::sendSms(SendSmsData::from([
 
 
 
+
 ```
 ##### Sending Email
 
@@ -662,6 +696,7 @@ $response = PayTRLink::sendEmail(SendEmailData::from([
     'link_id' => 'link_id_here',
     'email' => 'customer@example.com',
 ]));
+
 
 
 
@@ -705,6 +740,7 @@ public function handleCallback(Request $request)
 
 
 
+
 ```
 ##### Service Injection
 
@@ -726,6 +762,7 @@ class PaymentController
         return response()->json($response);
     }
 }
+
 
 
 
@@ -760,6 +797,7 @@ $settings->save();
 
 
 
+
 ```
 When Settings is used, settings values are used instead of config values.
 
@@ -774,6 +812,7 @@ $data = CreateLinkData::from([
     'price' => 1500.00, // TL
     // ...
 ]);
+
 
 
 
@@ -815,6 +854,7 @@ try {
 
 
 
+
 ```
 #### Test
 
@@ -830,11 +870,13 @@ composer test
 
 
 
+
 ```
 Test with coverage:
 
 ```bash
 composer test-coverage
+
 
 
 
