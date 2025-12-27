@@ -4,11 +4,8 @@ namespace FurkanMeclis\PayTRLink;
 
 use FurkanMeclis\PayTRLink\Commands\DemoLinkCommand;
 use FurkanMeclis\PayTRLink\Commands\InstallCommand;
-use FurkanMeclis\PayTRLink\Commands\PayTRLinkCommand;
-use FurkanMeclis\PayTRLink\Commands\PublishSettingsMigrationCommand;
 use FurkanMeclis\PayTRLink\Commands\SetupSettingsCommand;
 use FurkanMeclis\PayTRLink\Commands\TestConfigCommand;
-use FurkanMeclis\PayTRLink\Commands\TestSendLinkCommand;
 use FurkanMeclis\PayTRLink\Settings\PayTRSettings;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -27,13 +24,10 @@ class PayTRLinkServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasCommands([
-                PayTRLinkCommand::class,
-                TestConfigCommand::class,
-                DemoLinkCommand::class,
                 InstallCommand::class,
-                TestSendLinkCommand::class,
+                TestConfigCommand::class,
                 SetupSettingsCommand::class,
-                PublishSettingsMigrationCommand::class,
+                DemoLinkCommand::class,
             ]);
     }
 

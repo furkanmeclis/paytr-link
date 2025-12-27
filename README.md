@@ -24,17 +24,18 @@ Install the package via Composer:
 composer require furkanmeclis/paytr-link
 ```
 
-Publish the config file:
+Run the install command to publish config and optionally set up settings:
 
 ```bash
-php artisan vendor:publish --tag="paytr-link-config"
+php artisan paytr-link:install
 ```
 
-If you're going to use Spatie Laravel Settings:
+Or with settings support:
 
 ```bash
-php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
+php artisan paytr-link:install --settings
 php artisan migrate
+php artisan paytr-link:setup-settings --init
 ```
 
 ## Configuration
@@ -185,7 +186,7 @@ The package automatically registers PayTRSettings with Spatie Laravel Settings. 
 1. **Publish and run migrations** (if you haven't already):
 ```bash
 php artisan vendor:publish --provider="Spatie\LaravelSettings\LaravelSettingsServiceProvider" --tag="migrations"
-php artisan paytr-link:publish-settings-migration
+php artisan paytr-link:install --settings
 php artisan migrate
 ```
 
